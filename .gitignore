@@ -1,0 +1,12 @@
+# Environment / secrets
+.env
+
+# All runtime data — auth tokens, session DB, logs, binaries (private)
+data/share/
+
+# Provider/model config is the only thing worth committing from data/
+# Uncomment the next line if you do NOT want to commit opencode.json either:
+data/config/
+
+# Workspace — your project files (managed separately)
+workspace/

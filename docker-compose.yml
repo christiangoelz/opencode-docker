@@ -1,0 +1,78 @@
+services:
+  opencode:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: opencode-isolated:latest
+    container_name: opencode-sandbox
+
+    # Use host networking to access localhost services (Ollama, etc.)
+    network_mode: host
+
+    # Mount workspace and use bind mounts for config (avoids permission issues)
+    volumes:
+      - ${WORKSPACE_PATH:-./workspace}:/workspace
+      # Config directories - use bind mounts with proper ownership
+      - ./data/config:/home/opencode/.config/opencode
+      - ./data/share:/home/opencode/.local/share/opencode
+      # Clipboard support via X11 (optional)
+      - /tmp/.X11-unix:/tmp/.X11-unix:ro
+
+    # Environment variables from .env file
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      - HOME=/home/opencode
+      - DISPLAY=${DISPLAY:-:0}
+      # Critical for TUI with host networking
+      - TERM=${TERM:-xterm-256color}
+      - COLORTERM=${COLORTERM:-truecolor}
+      # Pin XDG dirs to mounted volumes so auth + sessions persist across restarts
+      - XDG_DATA_HOME=/home/opencode/.local/share
+      - XDG_CONFIG_HOME=/home/opencode/.config
+
+    # Security options
+    security_opt:
+      - no-new-privileges:true
+
+    # Run as the opencode user (UID 1001)
+    user: "1001:1001"
+
+    # Keep container running for interactive use
+    stdin_open: true
+    tty: true
+
+  # Alternative: isolated network (no access to host localhost)
+  opencode-isolated:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: opencode-isolated:latest
+    container_name: opencode-isolated
+    profiles:
+      - isolated
+
+    volumes:
+      - ${WORKSPACE_PATH:-./workspace}:/workspace
+      - ./data/config:/home/opencode/.config/opencode
+      - ./data/share:/home/opencode/.local/share/opencode
+      - /tmp/.X11-unix:/tmp/.X11-unix:ro
+
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      - HOME=/home/opencode
+      - DISPLAY=${DISPLAY:-:0}
+      - TERM=${TERM:-xterm-256color}
+      - COLORTERM=${COLORTERM:-truecolor}
+      # Pin XDG dirs to mounted volumes so auth + sessions persist across restarts
+      - XDG_DATA_HOME=/home/opencode/.local/share
+      - XDG_CONFIG_HOME=/home/opencode/.config
+
+    security_opt:
+      - no-new-privileges:true
+    user: "1001:1001"
+    stdin_open: true
+    tty: true
