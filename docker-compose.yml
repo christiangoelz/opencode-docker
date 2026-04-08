@@ -37,7 +37,7 @@ services:
       - no-new-privileges:true
 
     # Run as the opencode user (UID 1001)
-    user: "1001:1001"
+    user: "1000:1000"
 
     # Keep container running for interactive use
     stdin_open: true
