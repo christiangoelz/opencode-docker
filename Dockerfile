@@ -25,7 +25,12 @@ RUN apt-get update && apt-get install -y \
     ncurses-base \
     && rm -rf /var/lib/apt/lists/*
 
-RUN useradd -m -s /bin/bash -u 1000 opencode
+# Create non-root user for security
+RUN userdel -r ubuntu 2>/dev/null || true \
+    && useradd -m -s /bin/bash -u 1000 opencode
+
+# Switch to non-root user
+USER opencode
 
 # Switch to non-root user
 USER opencode
