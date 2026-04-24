@@ -17,6 +17,13 @@ if [ -t 0 ] && [ -t 1 ]; then
     fi
 fi
 
+# Ensure opencode.json exists (copy default if not present, e.g. fresh container)
+if [ ! -f "$XDG_CONFIG_HOME/opencode/opencode.json" ]; then
+    mkdir -p "$XDG_CONFIG_HOME/opencode"
+    cp /home/opencode/defaults/opencode.json "$XDG_CONFIG_HOME/opencode/opencode.json" 2>/dev/null || true
+    echo "→ Created default opencode.json with Ollama provider config"
+fi
+
 cat <<'WELCOME'
 ╔════════════════════════════════════════════════════════════════════════════╗
 ║                          OpenCode Docker                                   ║

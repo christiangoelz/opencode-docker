@@ -56,6 +56,10 @@ RUN npm install -g opencode-ai@latest
 # Create directories for persistent config
 RUN mkdir -p /home/opencode/.config/opencode /home/opencode/.local/share/opencode
 
+# Copy default opencode config (Ollama provider pre-configured)
+# Stored in /defaults/ so it isn't shadowed by the volume mount
+COPY --chown=opencode:opencode data/config/opencode/opencode.json /home/opencode/defaults/opencode.json
+
 # Copy entrypoint script
 COPY entrypoint.sh /home/opencode/entrypoint.sh
 
