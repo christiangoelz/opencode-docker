@@ -130,6 +130,9 @@ if [ "$NETWORK_HOST" = true ]; then
 else
     echo "  Network:    bridge"
 fi
+if [ -n "$LOCAL_ENDPOINT" ]; then
+    echo "  Ollama:     $LOCAL_ENDPOINT"
+fi
 
 # Build command
 if [ "$RUN_OPENCODE" = true ]; then

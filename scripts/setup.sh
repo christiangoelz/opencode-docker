@@ -36,6 +36,39 @@ mkdir -p "$PROJECT_DIR/workspace"
 echo "Creating data directories..."
 mkdir -p "$PROJECT_DIR/data/config" "$PROJECT_DIR/data/share"
 
+# Create default OpenCode config with Ollama provider
+echo "Creating OpenCode config with Ollama provider..."
+OPENCODE_CONFIG_DIR="$PROJECT_DIR/data/config/opencode"
+mkdir -p "$OPENCODE_CONFIG_DIR"
+
+# Default config that will be merged with Ollama models at runtime
+cat > "$OPENCODE_CONFIG_DIR/opencode.json" << 'EOF'
+{
+  "$schema": "https://opencode.ai/config.json",
+  "provider": {
+    "ollama": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "Ollama (local)",
+      "options": {
+        "baseURL": "http://localhost:11434/v1"
+      },
+      "models": {
+        "llama3.3:70b": {
+          "name": "Llama 3.3 70B"
+        },
+        "qwen3-coder-next:q4_K_M": {
+          "name": "Qwen3 Coder Next"
+        },
+        "gemma4:31b": {
+          "name": "Gemma 4 31B"
+        }
+      }
+    }
+  },
+  "model": "ollama/llama3.3:70b"
+}
+EOF
+
 # Build the Docker image
 echo "Building Docker image..."
 if [ "$USE_COMPOSE" = true ]; then
